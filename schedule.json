@@ -1,0 +1,45 @@
+{
+    "aircraft": {
+        "D213": {
+            "Hangar": null,
+            "Arrival": null,
+            "Departure": null
+        },
+        "AT-LX-2Y2": {
+            "Hangar": null,
+            "Arrival": null,
+            "Departure": null
+        },
+        "NW-19-1A": {
+            "Hangar": null,
+            "Arrival": null,
+            "Departure": null
+        }
+    },
+    "trucks": {
+        "JLX-9828": {
+            "Hangar": null,
+            "Arrival": null,
+            "Departure": null
+        },
+        "PK2-341": {
+            "Hangar": null,
+            "Arrival": null,
+            "Departure": null
+        },
+        "ADR-005": {
+            "Hangar": null,
+            "Arrival": null,
+            "Departure": null
+        },
+        "TX-241-Y": {
+            "Hangar": null,
+            "Arrival": null,
+            "Departure": null
+        }
+    },
+    "forklifts": {
+        "F01": [],
+        "F02": []
+    }
+}
