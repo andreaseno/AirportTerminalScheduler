@@ -13,44 +13,31 @@ def load_json(file_path):
     except json.JSONDecodeError:
         print(f"Error: File {file_path} is not a valid JSON file.")
         sys.exit(1)
+        
+def is_complete(assignment):
+    
+    return None
 
-# def schedule_operations(meta, aircraft, trucks):
-#     """Schedule aircraft and trucks within the given constraints."""
-#     start_time = meta["Start Time"]
-#     stop_time = meta["Stop Time"]
-#     hangars = cycle(meta["Hangars"])  # Rotate through hangars
-#     forklifts = cycle(meta["Forklifts"])  # Rotate through forklifts
+def backtrack(csp, assignment):
+    if is_complete(assignment):
+        return assignment
+    var = select_unassigned_var(csp, assignment)
+    for value in order_domain_variables(csp, var, assignment):
+        if consistent(value, assignment):
+            # assignment.add(var = value)
+            inferences = inference(csp, var, assignment)
+            if not inference_failure(inferences):
+                # csp.add(inferences)
+                result = backtrack(csp, assignment)
+                if not result_failure(result):
+                    return result
+                # csp.remove(inferences)
+            # assignment.remove(var = value)
+            
+def backtracking_search(csp):
+    backtrack(csp, {})
     
-#     schedule = {"aircraft": {}, "trucks": {}, "forklifts": {f: [] for f in meta["Forklifts"]}}
-    
-#     current_time = start_time
-    
-#     # Schedule aircraft
-#     for ac_id, details in sorted(aircraft.items(), key=lambda x: x[1]["Time"]):
-#         if current_time + 20 > stop_time:
-#             return {"aircraft": None, "trucks": None, "forklifts": None}  # Cannot fit all schedules
-#         hangar = next(hangars)
-#         schedule["aircraft"][ac_id] = {"Hangar": hangar, "Arrival": current_time, "Departure": current_time + 20}
-        
-#         forklift = next(forklifts)
-#         schedule["forklifts"][forklift].append({"Hangar": hangar, "Time": current_time, "Job": "Unload"})
-#         schedule["forklifts"][forklift].append({"Hangar": hangar, "Time": current_time + 20, "Job": "Load"})
-        
-#         current_time += 20
-    
-#     # Schedule trucks
-#     for truck_id, arrival_time in sorted(trucks.items(), key=lambda x: x[1]):
-#         if current_time + 5 > stop_time:
-#             return {"aircraft": None, "trucks": None, "forklifts": None}
-#         hangar = next(hangars)
-#         schedule["trucks"][truck_id] = {"Hangar": hangar, "Arrival": current_time, "Departure": current_time + 5}
-        
-#         forklift = next(forklifts)
-#         schedule["forklifts"][forklift].append({"Hangar": hangar, "Time": current_time, "Job": "Load"})
-        
-#         current_time += 5
-    
-#     return schedule    
+
     
 if __name__ == "__main__":
     if len(sys.argv) != 5:
