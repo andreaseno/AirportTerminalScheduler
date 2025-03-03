@@ -17,7 +17,7 @@ class CSP:
       - A dictionary of binary constraints:
          constraints[var_name] -> list of (neighbor_name, constraint_function)
     """
-    def __init__(self, variables, constraints=None):
+    def __init__(self, variables, binary_constraints=None, unary_constraints=None):
         """
         :param variables: List of StateVariable objects
         :param constraints: Dictionary of constraints where
@@ -25,12 +25,15 @@ class CSP:
                  value = list of (other_variable_name, constraint_function)
         """
         self.variables = variables
-        self.constraints = constraints if constraints else {}
+        self.binary_constraints = binary_constraints if binary_constraints else {}
+        self.unary_constraints = unary_constraints if unary_constraints else {}
         
         # Ensure every variable has an entry in constraints (even if empty)
         for var in self.variables:
-            if var.name not in self.constraints:
-                self.constraints[var.name] = []
+            if var.name not in self.binary_constraints:
+                self.binary_constraints[var.name] = []
+            if var.name not in self.unary_constraints:
+                self.unary_constraints[var.name] = []
 
     def is_complete(self, assignment):
         """
@@ -70,13 +73,20 @@ class CSP:
         assignment[var_name] = value
         # print(f"Checking if assignment is consistent at depth {depth}: ", assignment_check)
         for state, val in assignment.items():
-            if state in self.constraints:
-                for neighbor, constraint_func in self.constraints[state]:
+            if state in self.binary_constraints:
+                for neighbor, constraint_func in self.binary_constraints[state]:
                     if neighbor in assignment:  # Check only if neighbor has been assigned
                         if not constraint_func(val, assignment[neighbor]):
                             del assignment[var_name]
                             return False  # Constraint violated
+            if state in self.unary_constraints:
+                for constraint_func in self.unary_constraints[state]:
+                    if not constraint_func(val):
+                        del assignment[var_name]
+                        return False  # Constraint violated
         del assignment[var_name]
+        
+        
         return True  # All constraints satisfied
     
 class BacktrackingSolver:

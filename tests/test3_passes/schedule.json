@@ -1,0 +1,69 @@
+{
+    "aircraft": {
+        "TwoCargo Aircraft": {
+            "Hangar": "First Hangar",
+            "Arrival": 850,
+            "Departure": 910
+        },
+        "OneCargo Aircraft": {
+            "Hangar": "Second Hangar",
+            "Arrival": 850,
+            "Departure": 910
+        }
+    },
+    "trucks": {
+        "The Truck": {
+            "Hangar": "First Hangar",
+            "Arrival": 910,
+            "Departure": 915
+        },
+        "The Other Truck": {
+            "Hangar": "First Hangar",
+            "Arrival": 915,
+            "Departure": 920
+        },
+        "A Third Truck": {
+            "Hangar": "Second Hangar",
+            "Arrival": 910,
+            "Departure": 915
+        }
+    },
+    "forklifts": {
+        "Forklift1": [
+            {
+                "Hangar": "First Hangar",
+                "Time": 850,
+                "Job": "Unload"
+            },
+            {
+                "Hangar": "First Hangar",
+                "Time": 910,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "First Hangar",
+                "Time": 915,
+                "Job": "Load"
+            }
+        ],
+        "Forklift2": [
+            {
+                "Hangar": "First Hangar",
+                "Time": 850,
+                "Job": "Unload"
+            },
+            {
+                "Hangar": "Second Hangar",
+                "Time": 910,
+                "Job": "Load"
+            }
+        ],
+        "Forklift 3": [
+            {
+                "Hangar": "Second Hangar",
+                "Time": 850,
+                "Job": "Unload"
+            }
+        ]
+    }
+}

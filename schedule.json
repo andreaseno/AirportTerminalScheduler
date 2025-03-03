@@ -1,41 +1,41 @@
 {
     "aircraft": {
         "D213": {
-            "Hangar": null,
-            "Arrival": null,
-            "Departure": null
+            "Hangar": "North Hangar",
+            "Arrival": 805,
+            "Departure": 810
         },
         "AT-LX-2Y2": {
-            "Hangar": null,
-            "Arrival": null,
-            "Departure": null
+            "Hangar": "North Hangar",
+            "Arrival": 815,
+            "Departure": 820
         },
         "NW-19-1A": {
-            "Hangar": null,
-            "Arrival": null,
-            "Departure": null
+            "Hangar": "North Hangar",
+            "Arrival": 945,
+            "Departure": 950
         }
     },
     "trucks": {
         "JLX-9828": {
-            "Hangar": null,
-            "Arrival": null,
-            "Departure": null
+            "Hangar": "North Hangar",
+            "Arrival": 745,
+            "Departure": 750
         },
         "PK2-341": {
-            "Hangar": null,
-            "Arrival": null,
-            "Departure": null
+            "Hangar": "North Hangar",
+            "Arrival": 735,
+            "Departure": 740
         },
         "ADR-005": {
-            "Hangar": null,
-            "Arrival": null,
-            "Departure": null
+            "Hangar": "North Hangar",
+            "Arrival": 1020,
+            "Departure": 1025
         },
         "TX-241-Y": {
-            "Hangar": null,
-            "Arrival": null,
-            "Departure": null
+            "Hangar": "North Hangar",
+            "Arrival": 755,
+            "Departure": 800
         }
     },
     "forklifts": {

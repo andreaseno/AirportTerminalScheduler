@@ -1,0 +1,19 @@
+{
+    "aircraft": {
+        "The Aircraft": {
+            "Hangar": "The Hangar",
+            "Arrival": 800,
+            "Departure": 805
+        }
+    },
+    "trucks": {
+        "The Truck": {
+            "Hangar": "The Hangar",
+            "Arrival": 800,
+            "Departure": 805
+        }
+    },
+    "forklifts": {
+        "The Forklift": []
+    }
+}
