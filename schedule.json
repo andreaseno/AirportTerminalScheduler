@@ -39,7 +39,49 @@
         }
     },
     "forklifts": {
-        "F01": [],
-        "F02": []
+        "F01": [
+            {
+                "Hangar": "North Hangar",
+                "Time": 730,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "North Hangar",
+                "Time": 735,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "North Hangar",
+                "Time": 740,
+                "Job": "Unload"
+            },
+            {
+                "Hangar": "North Hangar",
+                "Time": 800,
+                "Job": "Unload"
+            }
+        ],
+        "F02": [
+            {
+                "Hangar": "North Hangar",
+                "Time": 730,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "North Hangar",
+                "Time": 735,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "North Hangar",
+                "Time": 740,
+                "Job": "Unload"
+            },
+            {
+                "Hangar": "North Hangar",
+                "Time": 800,
+                "Job": "Unload"
+            }
+        ]
     }
 }
