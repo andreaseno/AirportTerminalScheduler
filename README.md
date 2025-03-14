@@ -9,3 +9,6 @@ python terminalScheduler.py tests/test3_passes/meta.json tests/test3_passes/airc
 
 Run test 4:
 python terminalScheduler.py tests/test4_passes/meta.json tests/test4_passes/aircraft.json tests/test4_passes/trucks.json tests/test4_passes/my_schedule.json
+
+Run test 5:
+python terminalScheduler.py tests/test5_fails/meta.json tests/test5_fails/aircraft.json tests/test5_fails/trucks.json tests/test5_fails/my_schedule.json

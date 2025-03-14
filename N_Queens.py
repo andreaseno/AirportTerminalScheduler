@@ -44,9 +44,13 @@ def build_n_queens_csp(n):
 
 
 if __name__ == "__main__":
-    n = 6
+    n = 7
     csp_instance = build_n_queens_csp(n)
 
     solver = BacktrackingSolver()
     solution = solver.naive_solve(csp_instance)
     print("Solution:", solution)
+    solution = solver.solve_with_forward_checking(csp_instance)
+    print("Solution:", solution)
+    # solution = solver.solve_with_ac3(csp_instance)
+    # print("Solution:", solution)

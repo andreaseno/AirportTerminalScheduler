@@ -8,18 +8,40 @@
     },
     "trucks": {
         "The Truck": {
-            "Hangar": "The Hangar",
-            "Arrival": 800,
-            "Departure": 805
+            "Hangar": null,
+            "Arrival": null,
+            "Departure": null
         },
         "The Other Truck": {
-            "Hangar": "The Hangar",
-            "Arrival": 800,
-            "Departure": 805
+            "Hangar": null,
+            "Arrival": null,
+            "Departure": null
         }
     },
     "forklifts": {
-        "Forklift1": [],
-        "Forklift2": []
+        "Forklift1": [
+            {
+                "Hangar": "The Hangar",
+                "Time": 820,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "The Hangar",
+                "Time": 825,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "The Hangar",
+                "Time": 800,
+                "Job": "Unload"
+            }
+        ],
+        "Forklift2": [
+            {
+                "Hangar": "The Hangar",
+                "Time": 800,
+                "Job": "Unload"
+            }
+        ]
     }
 }
