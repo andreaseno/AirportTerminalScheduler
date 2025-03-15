@@ -28,6 +28,9 @@ def convert_datetimes(obj):
 
 
 def find_forklift_jobs(solution, forklift_name):
+    """
+    Given a CSP solution, find and return any forklift jobs for forklift with name forklift_name.
+    """
     forklift_jobs = []
     for job, details in solution.items():
         if job.startswith('forklift_') and details.get('forklift_name') == forklift_name:
@@ -42,6 +45,13 @@ def find_forklift_jobs(solution, forklift_name):
     return forklift_jobs
 
 def find_associated_load_job(solution, truck_name):
+    """
+    Trucks are wrapped into Load jobs for simplicity, meaning a trucks arrival, derparture, and hangar 
+    are all the same as the load job. This is achieved by associating a truck with each load job through 
+    the associated_truck_name variable and then placing constraints on that variable (ex: 2 trucks cannot
+    be in the same hangar at the same time). This function finds the load job associated with a given truck
+    and returns it.
+    """
     for job, details in solution.items():
         if job.startswith("forklift_load_job") and details.get('associated_truck_name') == truck_name:
             return details
@@ -49,7 +59,14 @@ def find_associated_load_job(solution, truck_name):
     return {}
 
 def find_associated_aircraft(solution, aircraft_name):
-    
+    """
+    To simplify things further, we associate jobs with aircraft before solving the CSP, meaning that a 
+    forklift job's hangar can be inferred by the hangar of the associated aircraft, and constraints can be
+    placed on associated_aircraft_name instead of on load job hangars (ex: saying two load jobs cannot happen
+    at the same time in a hangar is the same as saying two load jobs cannot happen at the same time if they 
+    have the same associated aircrafts). This function finds the aircraft associated with a given aircraft
+    name and returns it.
+    """
     for var, details in solution.items():
         if var == aircraft_name:
             return details
@@ -103,26 +120,7 @@ def generate_aircraft_domain(valid_times, hangars, aircraft_name, cargo_amount, 
     
     return domain
 
-# def generate_truck_domain(valid_times, hangars, truck_name, terminal_arrival_time):
-#     """Generate the domain for given Truck state variable"""
-#     domain = []
-    
-#     # Generate all possible state combinations
-#     for hangar, arrival_time in product(hangars, valid_times):
-#         # Ensure departure time is after arrival time
-#         for departure_time in valid_times:
-#             if departure_time > arrival_time:
-#                 domain.append({
-#                     'truck_name': truck_name,
-#                     'hangar_assignment': hangar,
-#                     'hangar_arrival_time': arrival_time,
-#                     'terminal_arrival_time': terminal_arrival_time,
-#                     'departure_time': departure_time
-#                 })
-    
-#     return domain
-
-def generate_forklift_job_domain(jobtype, job_name, forklifts, hangars, valid_times, associated_job, associated_truck, associated_aircraft):
+def generate_forklift_job_domain(jobtype, job_name, forklifts, valid_times, associated_job, associated_truck, associated_aircraft):
     """Generate the domain for given Forklift Job state variable"""
     domain = []
     
@@ -134,7 +132,6 @@ def generate_forklift_job_domain(jobtype, job_name, forklifts, hangars, valid_ti
             domain.append({
                 'job_name': job_name, 
                 'forklift_name': forklift,
-                # 'hangar_assignment': hangar,
                 'arrival_time': arrival_time,
                 'associated_job': associated_job,
                 'associated_truck_name': associated_truck["name"],
@@ -144,7 +141,6 @@ def generate_forklift_job_domain(jobtype, job_name, forklifts, hangars, valid_ti
             domain.append({
                 'job_name': job_name, 
                 'forklift_name': forklift,
-                # 'hangar_assignment': hangar,
                 'arrival_time': arrival_time,
                 'associated_job': associated_job,
                 'associated_aircraft_name': associated_aircraft
@@ -173,7 +169,6 @@ def build_problem_csp(meta, aircrafts, trucks):
     total_cargo_amount = 0
     aircraft_list = []
     for i, aircraft in enumerate(aircrafts):
-        # var_name = f"aircraft_{i}"
         aircraft_name = aircraft
         aircraft_cargo_amount = aircrafts[aircraft]["Cargo"]
         terminal_arrival_time = datetime.strptime(f"{aircrafts[aircraft]['Time']:04d}", "%H%M")
@@ -193,26 +188,18 @@ def build_problem_csp(meta, aircrafts, trucks):
         if (i >= total_cargo_amount):
             # TODO: NEED TO CHANGE schedule.json TRUCK LOGIC TO HANDLE CASE WHERE NOT ALL TRUCKS HAVE STATE VARS
             break
-            
-        # var_name = f"truck_{i}"
         truck_name = truck
         terminal_arrival_time = datetime.strptime(f"{trucks_data[truck]:04d}", "%H%M")
         truck_info.append({
             "name": truck_name,
             "terminal_arrival_time": terminal_arrival_time
-        })
-        # Domain: all permutations of name, hangar, arrival time, departure time where name is a constant
-        # domain = generate_truck_domain(all_valid_times, all_hangars, truck_name, terminal_arrival_time)
-
-        # truck_variables.append(StateVariable(truck_name, domain))
-    # variables = variables + truck_variables    
-    
+        })    
+        
     total_trucks = len(trucks_data)
     if (total_trucks < total_cargo_amount):
         # TODO: Need to handle case when there aren't enough trucks, becasue we can assume that problem is unsolvable if there aren't enough trucks
         solvable = False
         print("CSP IS NOT SOLVABLE")
-        # return CSP(variables, binary_constraints, unary_constraints, solvable)
     
     # 1.3) Create state variables for each Forklift Load Job X_forklift_job_m
     load_job_variables = []
@@ -222,7 +209,7 @@ def build_problem_csp(meta, aircrafts, trucks):
         associated_unload = f"forklift_unload_job_{job_num}"
         associated_truck = truck_info[job_num]
         associated_aircraft = aircraft_list[job_num]
-        domain = generate_forklift_job_domain("Load", var_name, all_forklifts, all_hangars, all_valid_times, associated_unload, associated_truck, associated_aircraft)
+        domain = generate_forklift_job_domain("Load", var_name, all_forklifts, all_valid_times, associated_unload, associated_truck, associated_aircraft)
         
         load_job_variables.append(StateVariable(var_name, domain))
     variables = variables + load_job_variables
@@ -235,8 +222,7 @@ def build_problem_csp(meta, aircrafts, trucks):
         var_name = f"forklift_unload_job_{job_num}"
         associated_load = f"forklift_load_job_{job_num}"
         associated_aircraft = aircraft_list[job_num]
-        domain = generate_forklift_job_domain("Unload", var_name, all_forklifts, all_hangars, all_valid_times, associated_load, None, associated_aircraft)
-        # print(len(domain))
+        domain = generate_forklift_job_domain("Unload", var_name, all_forklifts, all_valid_times, associated_load, None, associated_aircraft)
         unload_job_variables.append(StateVariable(var_name, domain))
     variables = variables + unload_job_variables
     
@@ -253,7 +239,6 @@ def build_problem_csp(meta, aircrafts, trucks):
     total_aircraft_vars = len(aircraft_variables)
     # Build out all aircraft state variable pair constraints
     for i in range(total_aircraft_vars):
-        # aircraft_a = f"aircraft_{i}"
         aircraft_a = aircraft_variables[i].name
         # Constraint: plane cannot go to the hangar before it arrives at the terminal
         unary_constraints[aircraft_a].append(
@@ -272,27 +257,6 @@ def build_problem_csp(meta, aircrafts, trucks):
                 )
             )
     
-    # 2.2) build out all truck specific constraints
-    # Build out all truck-specific state variable pair constraints
-    # for i in range(total_trucks_vars):
-    #     truck_a = truck_variables[i].name
-    #     # Constraint: truck cannot go to the hangar before it arrives at the terminal
-    #     unary_constraints[truck_a].append(
-    #         (lambda a: a["terminal_arrival_time"] <= a["hangar_arrival_time"])
-    #     )
-    #     for j in range(i + 1, total_trucks_vars):
-            
-    #         truck_b = truck_variables[j].name
-            
-    #         print(f"Pair: {truck_a} and {truck_b}")
-    #         # Constraint: if truck A comes into the hangar before truck B, then truck A must leave before truck B arr time and the vice versa situation unless they are in different hangars
-    #         binary_constraints[truck_a].append(
-    #             (truck_b, lambda a, b: 
-    #                 ((a["hangar_arrival_time"] < b["hangar_arrival_time"] and a["departure_time"] < b["hangar_arrival_time"]) or not a["hangar_assignment"] == b["hangar_assignment"]) or
-    #                 ((a["hangar_arrival_time"] > b["hangar_arrival_time"] and b["departure_time"] < a["hangar_arrival_time"]) or not a["hangar_assignment"] == b["hangar_assignment"])
-    #             )
-    #         )
-            
     # 2.3) build out all forklift unload job specific constraints
     total_unload_vars = len(unload_job_variables)
     total_load_vars = len(load_job_variables)
@@ -324,13 +288,7 @@ def build_problem_csp(meta, aircrafts, trucks):
                     ((not a["forklift_name"] == b["forklift_name"]) or (a["arrival_time"] >= b["arrival_time"] + timedelta(minutes=5)))
                 )
             )
-            # Constraint: for an unload job a and load job b that are associated, the unload job a must happen before the load job and at the same hangar
-            # binary_constraints[unload_job_a].append(
-            #     (load_job_b, lambda a, b: 
-            #         # two jobs must be at the same hangar and unload job a must happen before load job b
-            #         ((not a["job_name"] == b["associated_job"]) or (a["hangar_assignment"] == b["hangar_assignment"]) and (b["arrival_time"] > a["arrival_time"]))
-            #     )
-            # )
+
             binary_constraints[unload_job_a].append(
                 (load_job_b, lambda a, b: 
                     # two jobs must be at the same hangar and unload job a must happen before load job b
@@ -372,45 +330,8 @@ def build_problem_csp(meta, aircrafts, trucks):
             binary_constraints[aircraft_a].append(
                 (unload_job_b, lambda a, b: 
                     ((not a["aircraft_name"] == b["associated_aircraft_name"]) or ((a["hangar_arrival_time"] <= b["arrival_time"]) and (a["departure_time"] >= b["arrival_time"]+timedelta(minutes=20))))
-                    # either the associated aircraft var does not match or load job must start after the aircraft lands
-                    # either the two forklifts must have diff names or job b cannot perform an unload within 20 minutes after job a
-                    # ((not a["forklift_name"] == b["forklift_name"]) or (b["arrival_time"] >= a["arrival_time"] + timedelta(minutes=20))) or
-                    # # either the two forklifts must have diff names or job a cannot perform an unload within 20 minutes after job b
-                    # ((not a["forklift_name"] == b["forklift_name"]) or (a["arrival_time"] >= b["arrival_time"] + timedelta(minutes=20)))
                 )
             )
-        # For (aircraft, load) pairs
-        for k in range(total_load_vars):
-            load_job_b = load_job_variables[k].name
-            # # Constraint 1: if an associated aircraft load job pair, the aircraft must take off after the load job ends
-            # binary_constraints[aircraft_a].append(
-            #     (load_job_b, lambda a, b: 
-            #         ((not a["aircraft_name"] == b["associated_aircraft_name"]) or (a["departure_time"] >= b["arrival_time"]+timedelta(minutes=5)))
-            #         # either the associated aircraft var does not match or load job must start after the aircraft lands
-            #         # either the two forklifts must have diff names or job b cannot perform an unload within 20 minutes after job a
-            #         # ((not a["forklift_name"] == b["forklift_name"]) or (b["arrival_time"] >= a["arrival_time"] + timedelta(minutes=20))) or
-            #         # # either the two forklifts must have diff names or job a cannot perform an unload within 20 minutes after job b
-            #         # ((not a["forklift_name"] == b["forklift_name"]) or (a["arrival_time"] >= b["arrival_time"] + timedelta(minutes=20)))
-            #     )
-            # )
-            
-            # Constraint: for an unload job a and load job b, job b cannot have the same forklift performing an load within 20 minutes after job a
-            #             or job a cannot have the same forklift performing an unload within 5 minutes after job b
-            # binary_constraints[unload_job_a].append(
-            #     (load_job_b, lambda a, b: 
-            #         # either the two forklifts must have diff names or job b cannot perform an load within 20 minutes after job a starts unloading
-            #         ((not a["forklift_name"] == b["forklift_name"]) or (b["arrival_time"] >= a["arrival_time"] + timedelta(minutes=20))) or
-            #         # either the two forklifts must have diff names or job a cannot perform an unload within 5 minutes after job b unloads
-            #         ((not a["forklift_name"] == b["forklift_name"]) or (a["arrival_time"] >= b["arrival_time"] + timedelta(minutes=5)))
-            #     )
-            # )
-            # # Constraint: for an unload job a and load job b that are associated, the unload job a must happen before the load job and at the same hangar
-            # binary_constraints[unload_job_a].append(
-            #     (load_job_b, lambda a, b: 
-            #         # two jobs must be at the same hangar and unload job a must happen before load job b
-            #         ((not a["job_name"] == b["associated_job"]) or (a["hangar_assignment"] == b["hangar_assignment"]) and (b["arrival_time"] > a["arrival_time"]))
-            #     )
-            # )
             
     return CSP(variables, binary_constraints, unary_constraints, solvable)
 
@@ -430,8 +351,6 @@ if __name__ == "__main__":
     # solution = solver.naive_solve(csp, 0)
     # print("Solution:", solution)
     solution = solver.solve_with_forward_checking(csp, 0)
-    print("Solution:", solution)
-    # solution = solver.solve_with_ac3(csp, 0)
     # print("Solution:", solution)
     
     with open("solution.json", 'w') as file:
@@ -442,7 +361,6 @@ if __name__ == "__main__":
     
     for aircraft in aircraft_data:
         schedule["aircraft"][aircraft] = {
-            # TODO make these not be default values
             "Hangar": solution[aircraft]["hangar_assignment"],
             "Arrival": datetime_to_military(solution[aircraft]["hangar_arrival_time"]),
             "Departure": datetime_to_military(solution[aircraft]["departure_time"])
@@ -450,22 +368,10 @@ if __name__ == "__main__":
         }
         
     for truck in trucks_data:
-        # if truck in solution:
-        #     schedule["trucks"][truck] = {
-        #         # TODO make these not be default values
-        #         "Hangar": solution[truck]["hangar_assignment"],
-        #         "Arrival": datetime_to_military(solution[truck]["hangar_arrival_time"]),
-        #         "Departure": datetime_to_military(solution[truck]["departure_time"])
-        #     }
-        # else:
         # assign a load job to each truck. That load job's arrival will be the same as this trucks arrival and departure will be 5 mins after
         associated_load = find_associated_load_job(solution, truck)
         associated_aircraft = find_associated_aircraft(solution, associated_load['associated_aircraft_name'])
-        # print(solution)
-        # print(truck)
-        print(associated_load)
         schedule["trucks"][truck] = {
-            # TODO make these not be default values
             "Hangar": associated_aircraft['hangar_assignment'],
             "Arrival": datetime_to_military(associated_load['arrival_time']),
             "Departure": datetime_to_military(associated_load['arrival_time']+timedelta(minutes=5))

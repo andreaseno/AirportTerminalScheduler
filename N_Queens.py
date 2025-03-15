@@ -52,5 +52,3 @@ if __name__ == "__main__":
     print("Solution:", solution)
     solution = solver.solve_with_forward_checking(csp_instance)
     print("Solution:", solution)
-    # solution = solver.solve_with_ac3(csp_instance)
-    # print("Solution:", solution)
