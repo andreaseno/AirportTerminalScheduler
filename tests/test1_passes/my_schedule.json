@@ -3,14 +3,14 @@
         "The Aircraft": {
             "Hangar": "The Hangar",
             "Arrival": 800,
-            "Departure": 805
+            "Departure": 825
         }
     },
     "trucks": {
         "The Truck": {
-            "Hangar": null,
-            "Arrival": null,
-            "Departure": null
+            "Hangar": "The Hangar",
+            "Arrival": 820,
+            "Departure": 825
         }
     },
     "forklifts": {

@@ -8,18 +8,53 @@ def datetime_to_military(dt):
     """Turn a datetime into an Integer based on the .json output specifications"""
     return int(dt.strftime("%H%M"))
 
+def convert_datetimes(obj):
+    """
+    Recursively traverse obj (which can be a dict, list, or nested combinations).
+    Whenever a datetime object is found, convert it with `datetime_to_military`.
+    """
+    if isinstance(obj, dict):
+        # Recursively process each key-value pair
+        return {k: convert_datetimes(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        # Recursively process each element of the list
+        return [convert_datetimes(item) for item in obj]
+    elif isinstance(obj, datetime):
+        # Convert datetime objects to int
+        return datetime_to_military(obj)
+    else:
+        # Leave all other types as is
+        return obj
+
+
 def find_forklift_jobs(solution, forklift_name):
     forklift_jobs = []
     for job, details in solution.items():
         if job.startswith('forklift_') and details.get('forklift_name') == forklift_name:
             job_type = 'Load' if '_load_' in job else 'Unload'
+            associated_aircraft = find_associated_aircraft(solution, details.get('associated_aircraft_name'))
             forklift_jobs.append({
-                'Hangar': details.get('hangar_assignment'),
+                'Hangar': associated_aircraft["hangar_assignment"],
                 'Time': datetime_to_military(details.get('arrival_time')),
                 'Job': job_type
             })
     
     return forklift_jobs
+
+def find_associated_load_job(solution, truck_name):
+    for job, details in solution.items():
+        if job.startswith("forklift_load_job") and details.get('associated_truck_name') == truck_name:
+            return details
+    
+    return {}
+
+def find_associated_aircraft(solution, aircraft_name):
+    
+    for var, details in solution.items():
+        if var == aircraft_name:
+            return details
+    
+    return {}
 
 def load_json(file_path):
     """Load JSON data from a file."""
@@ -87,30 +122,32 @@ def generate_aircraft_domain(valid_times, hangars, aircraft_name, cargo_amount, 
     
 #     return domain
 
-def generate_forklift_job_domain(jobtype, job_name, forklifts, hangars, valid_times, associated_job, associated_truck):
+def generate_forklift_job_domain(jobtype, job_name, forklifts, hangars, valid_times, associated_job, associated_truck, associated_aircraft):
     """Generate the domain for given Forklift Job state variable"""
     domain = []
     
     # Generate all possible state combinations
-    for hangar, arrival_time, forklift in product(hangars, valid_times, forklifts):
+    for arrival_time, forklift in product(valid_times, forklifts):
         # Ensure departure time is after arrival time
         # for departure_time in valid_times:
         if jobtype == "Load" and arrival_time >= associated_truck["terminal_arrival_time"]:
             domain.append({
                 'job_name': job_name, 
                 'forklift_name': forklift,
-                'hangar_assignment': hangar,
+                # 'hangar_assignment': hangar,
                 'arrival_time': arrival_time,
                 'associated_job': associated_job,
                 'associated_truck_name': associated_truck["name"],
+                'associated_aircraft_name': associated_aircraft
             })
         elif jobtype == "Unload":
             domain.append({
                 'job_name': job_name, 
                 'forklift_name': forklift,
-                'hangar_assignment': hangar,
+                # 'hangar_assignment': hangar,
                 'arrival_time': arrival_time,
                 'associated_job': associated_job,
+                'associated_aircraft_name': associated_aircraft
             })
     
     return domain
@@ -134,12 +171,15 @@ def build_problem_csp(meta, aircrafts, trucks):
     all_valid_times = generate_time_intervals(meta["Start Time"], meta["Stop Time"])
     all_hangars = meta["Hangars"]
     total_cargo_amount = 0
-    for i, aircraft in enumerate(aircraft_data):
+    aircraft_list = []
+    for i, aircraft in enumerate(aircrafts):
         # var_name = f"aircraft_{i}"
         aircraft_name = aircraft
-        aircraft_cargo_amount = aircraft_data[aircraft]["Cargo"]
-        terminal_arrival_time = datetime.strptime(f"{aircraft_data[aircraft]['Time']:04d}", "%H%M")
+        aircraft_cargo_amount = aircrafts[aircraft]["Cargo"]
+        terminal_arrival_time = datetime.strptime(f"{aircrafts[aircraft]['Time']:04d}", "%H%M")
         total_cargo_amount += aircraft_cargo_amount
+        for _ in range(aircraft_cargo_amount):
+            aircraft_list.append(aircraft)
         # Domain: all permutations of name, hangar, arrival time, departure time, and cargo amount where name and cargo amount are constants
         domain = generate_aircraft_domain(all_valid_times, all_hangars, aircraft_name, aircraft_cargo_amount, terminal_arrival_time)
 
@@ -181,7 +221,8 @@ def build_problem_csp(meta, aircrafts, trucks):
         var_name = f"forklift_load_job_{job_num}"
         associated_unload = f"forklift_unload_job_{job_num}"
         associated_truck = truck_info[job_num]
-        domain = generate_forklift_job_domain("Load", var_name, all_forklifts, all_hangars, all_valid_times, associated_unload, associated_truck)
+        associated_aircraft = aircraft_list[job_num]
+        domain = generate_forklift_job_domain("Load", var_name, all_forklifts, all_hangars, all_valid_times, associated_unload, associated_truck, associated_aircraft)
         
         load_job_variables.append(StateVariable(var_name, domain))
     variables = variables + load_job_variables
@@ -193,7 +234,8 @@ def build_problem_csp(meta, aircrafts, trucks):
     for job_num in range(total_cargo_amount):
         var_name = f"forklift_unload_job_{job_num}"
         associated_load = f"forklift_load_job_{job_num}"
-        domain = generate_forklift_job_domain("Unload", var_name, all_forklifts, all_hangars, all_valid_times, associated_load, None)
+        associated_aircraft = aircraft_list[job_num]
+        domain = generate_forklift_job_domain("Unload", var_name, all_forklifts, all_hangars, all_valid_times, associated_load, None, associated_aircraft)
         # print(len(domain))
         unload_job_variables.append(StateVariable(var_name, domain))
     variables = variables + unload_job_variables
@@ -283,10 +325,16 @@ def build_problem_csp(meta, aircrafts, trucks):
                 )
             )
             # Constraint: for an unload job a and load job b that are associated, the unload job a must happen before the load job and at the same hangar
+            # binary_constraints[unload_job_a].append(
+            #     (load_job_b, lambda a, b: 
+            #         # two jobs must be at the same hangar and unload job a must happen before load job b
+            #         ((not a["job_name"] == b["associated_job"]) or (a["hangar_assignment"] == b["hangar_assignment"]) and (b["arrival_time"] > a["arrival_time"]))
+            #     )
+            # )
             binary_constraints[unload_job_a].append(
                 (load_job_b, lambda a, b: 
                     # two jobs must be at the same hangar and unload job a must happen before load job b
-                    (a["hangar_assignment"] == b["hangar_assignment"]) and (b["arrival_time"] > a["arrival_time"])
+                    ((not a["job_name"] == b["associated_job"]) or (b["arrival_time"] > a["arrival_time"]))
                 )
             )
     
@@ -310,11 +358,59 @@ def build_problem_csp(meta, aircrafts, trucks):
             binary_constraints[load_job_a].append(
                 (load_job_b, lambda a, b: 
                     # either the two forklifts must have diff hangars or job a and b cannot happen at the same time
-                    (not a["hangar_assignment"] == b["hangar_assignment"]) or (not b["arrival_time"] == a["arrival_time"])
+                    (not a["associated_aircraft_name"] == b["associated_aircraft_name"]) or (not b["arrival_time"] == a["arrival_time"])
                 )
             )
+    
+    # 2.4) Build out all aircraft to job constraints
+    for i in range(total_aircraft_vars):
+        aircraft_a = aircraft_variables[i].name
+        # For (aircraft, unload) pairs
+        for j in range(0, total_unload_vars):
+            unload_job_b = unload_job_variables[j].name
+            # Constraint 1: if an associated aircraft unload  job pair, the load job must start after the aircraft lands
+            binary_constraints[aircraft_a].append(
+                (unload_job_b, lambda a, b: 
+                    ((not a["aircraft_name"] == b["associated_aircraft_name"]) or ((a["hangar_arrival_time"] <= b["arrival_time"]) and (a["departure_time"] >= b["arrival_time"]+timedelta(minutes=20))))
+                    # either the associated aircraft var does not match or load job must start after the aircraft lands
+                    # either the two forklifts must have diff names or job b cannot perform an unload within 20 minutes after job a
+                    # ((not a["forklift_name"] == b["forklift_name"]) or (b["arrival_time"] >= a["arrival_time"] + timedelta(minutes=20))) or
+                    # # either the two forklifts must have diff names or job a cannot perform an unload within 20 minutes after job b
+                    # ((not a["forklift_name"] == b["forklift_name"]) or (a["arrival_time"] >= b["arrival_time"] + timedelta(minutes=20)))
+                )
+            )
+        # For (aircraft, load) pairs
+        for k in range(total_load_vars):
+            load_job_b = load_job_variables[k].name
+            # # Constraint 1: if an associated aircraft load job pair, the aircraft must take off after the load job ends
+            # binary_constraints[aircraft_a].append(
+            #     (load_job_b, lambda a, b: 
+            #         ((not a["aircraft_name"] == b["associated_aircraft_name"]) or (a["departure_time"] >= b["arrival_time"]+timedelta(minutes=5)))
+            #         # either the associated aircraft var does not match or load job must start after the aircraft lands
+            #         # either the two forklifts must have diff names or job b cannot perform an unload within 20 minutes after job a
+            #         # ((not a["forklift_name"] == b["forklift_name"]) or (b["arrival_time"] >= a["arrival_time"] + timedelta(minutes=20))) or
+            #         # # either the two forklifts must have diff names or job a cannot perform an unload within 20 minutes after job b
+            #         # ((not a["forklift_name"] == b["forklift_name"]) or (a["arrival_time"] >= b["arrival_time"] + timedelta(minutes=20)))
+            #     )
+            # )
             
-        
+            # Constraint: for an unload job a and load job b, job b cannot have the same forklift performing an load within 20 minutes after job a
+            #             or job a cannot have the same forklift performing an unload within 5 minutes after job b
+            # binary_constraints[unload_job_a].append(
+            #     (load_job_b, lambda a, b: 
+            #         # either the two forklifts must have diff names or job b cannot perform an load within 20 minutes after job a starts unloading
+            #         ((not a["forklift_name"] == b["forklift_name"]) or (b["arrival_time"] >= a["arrival_time"] + timedelta(minutes=20))) or
+            #         # either the two forklifts must have diff names or job a cannot perform an unload within 5 minutes after job b unloads
+            #         ((not a["forklift_name"] == b["forklift_name"]) or (a["arrival_time"] >= b["arrival_time"] + timedelta(minutes=5)))
+            #     )
+            # )
+            # # Constraint: for an unload job a and load job b that are associated, the unload job a must happen before the load job and at the same hangar
+            # binary_constraints[unload_job_a].append(
+            #     (load_job_b, lambda a, b: 
+            #         # two jobs must be at the same hangar and unload job a must happen before load job b
+            #         ((not a["job_name"] == b["associated_job"]) or (a["hangar_assignment"] == b["hangar_assignment"]) and (b["arrival_time"] > a["arrival_time"]))
+            #     )
+            # )
             
     return CSP(variables, binary_constraints, unary_constraints, solvable)
 
@@ -338,6 +434,9 @@ if __name__ == "__main__":
     # solution = solver.solve_with_ac3(csp, 0)
     # print("Solution:", solution)
     
+    with open("solution.json", 'w') as file:
+        json.dump(convert_datetimes(solution), file, indent=4)
+    
     # insert code to create schedule here
     schedule = {"aircraft": {}, "trucks": {}, "forklifts": {}}
     
@@ -351,20 +450,26 @@ if __name__ == "__main__":
         }
         
     for truck in trucks_data:
-        if truck in solution:
-            schedule["trucks"][truck] = {
-                # TODO make these not be default values
-                "Hangar": solution[truck]["hangar_assignment"],
-                "Arrival": datetime_to_military(solution[truck]["hangar_arrival_time"]),
-                "Departure": datetime_to_military(solution[truck]["departure_time"])
-            }
-        else:
-            schedule["trucks"][truck] = {
-                # TODO make these not be default values
-                "Hangar": None,
-                "Arrival": None,
-                "Departure": None
-            }
+        # if truck in solution:
+        #     schedule["trucks"][truck] = {
+        #         # TODO make these not be default values
+        #         "Hangar": solution[truck]["hangar_assignment"],
+        #         "Arrival": datetime_to_military(solution[truck]["hangar_arrival_time"]),
+        #         "Departure": datetime_to_military(solution[truck]["departure_time"])
+        #     }
+        # else:
+        # assign a load job to each truck. That load job's arrival will be the same as this trucks arrival and departure will be 5 mins after
+        associated_load = find_associated_load_job(solution, truck)
+        associated_aircraft = find_associated_aircraft(solution, associated_load['associated_aircraft_name'])
+        # print(solution)
+        # print(truck)
+        print(associated_load)
+        schedule["trucks"][truck] = {
+            # TODO make these not be default values
+            "Hangar": associated_aircraft['hangar_assignment'],
+            "Arrival": datetime_to_military(associated_load['arrival_time']),
+            "Departure": datetime_to_military(associated_load['arrival_time']+timedelta(minutes=5))
+        }
         
     for forklift in meta_data["Forklifts"]:
         schedule["forklifts"][forklift] = find_forklift_jobs(solution, forklift)
