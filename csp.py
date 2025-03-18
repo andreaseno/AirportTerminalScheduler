@@ -174,12 +174,26 @@ class BacktrackingSolver:
         # Calculate and print execution time
         execution_time = end_time - start_time
         print(f"Execution time for forward checking backtracking alg: {execution_time:.2f} seconds")
-        return ret
+        if ret is None:
+            return {
+                "aircraft": None,
+                "trucks": None,
+                "forklifts": None
+            }
+        else:    
+            return ret
     
     def backtrack_with_forward_check(self, csp, assignment):
         """
         The main recursive backtracking function that includes forward checking.
         """
+        if not csp.solvable: 
+            return {
+                "aircraft": None,
+                "trucks": None,
+                "forklifts": None
+            }
+        
         if csp.is_complete(assignment):
             # Found a solution
             return assignment

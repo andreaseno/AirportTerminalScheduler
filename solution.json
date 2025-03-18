@@ -4,82 +4,86 @@
         "hangar_assignment": "North Hangar",
         "hangar_arrival_time": 805,
         "terminal_arrival_time": 805,
-        "departure_time": 825,
+        "departure_time": 1005,
         "cargo_amount": 2
     },
     "AT-LX-2Y2": {
         "aircraft_name": "AT-LX-2Y2",
         "hangar_assignment": "North Hangar",
-        "hangar_arrival_time": 830,
+        "hangar_arrival_time": 1010,
         "terminal_arrival_time": 815,
-        "departure_time": 850,
+        "departure_time": 1030,
         "cargo_amount": 1
     },
     "NW-19-1A": {
         "aircraft_name": "NW-19-1A",
         "hangar_assignment": "North Hangar",
-        "hangar_arrival_time": 945,
+        "hangar_arrival_time": 1035,
         "terminal_arrival_time": 945,
-        "departure_time": 1005,
+        "departure_time": 1055,
         "cargo_amount": 1
     },
     "forklift_load_job_0": {
         "job_name": "forklift_load_job_0",
         "forklift_name": "F01",
-        "arrival_time": 825,
+        "arrival_time": 1005,
         "associated_job": "forklift_unload_job_0",
         "associated_truck_name": "JLX-9828",
-        "associated_aircraft_name": "D213"
+        "associated_aircraft_name": "D213",
+        "hangar_assignment": "North Hangar"
     },
     "forklift_load_job_1": {
         "job_name": "forklift_load_job_1",
         "forklift_name": "F01",
-        "arrival_time": 830,
+        "arrival_time": 1010,
         "associated_job": "forklift_unload_job_1",
         "associated_truck_name": "PK2-341",
-        "associated_aircraft_name": "D213"
+        "associated_aircraft_name": "D213",
+        "hangar_assignment": "North Hangar"
     },
     "forklift_load_job_2": {
         "job_name": "forklift_load_job_2",
-        "forklift_name": "F01",
-        "arrival_time": 1020,
+        "forklift_name": "F02",
+        "arrival_time": 1030,
         "associated_job": "forklift_unload_job_2",
         "associated_truck_name": "ADR-005",
-        "associated_aircraft_name": "AT-LX-2Y2"
+        "associated_aircraft_name": "AT-LX-2Y2",
+        "hangar_assignment": "North Hangar"
     },
     "forklift_load_job_3": {
         "job_name": "forklift_load_job_3",
         "forklift_name": "F01",
-        "arrival_time": 950,
+        "arrival_time": 1055,
         "associated_job": "forklift_unload_job_3",
         "associated_truck_name": "TX-241-Y",
-        "associated_aircraft_name": "NW-19-1A"
+        "associated_aircraft_name": "NW-19-1A",
+        "hangar_assignment": "North Hangar"
     },
     "forklift_unload_job_0": {
         "job_name": "forklift_unload_job_0",
         "forklift_name": "F01",
-        "arrival_time": 805,
+        "arrival_time": 945,
         "associated_job": "forklift_load_job_0",
         "associated_aircraft_name": "D213"
     },
     "forklift_unload_job_1": {
         "job_name": "forklift_unload_job_1",
         "forklift_name": "F02",
-        "arrival_time": 805,
+        "arrival_time": 945,
         "associated_job": "forklift_load_job_1",
         "associated_aircraft_name": "D213"
     },
     "forklift_unload_job_2": {
         "job_name": "forklift_unload_job_2",
         "forklift_name": "F02",
-        "arrival_time": 830,
+        "arrival_time": 1010,
         "associated_job": "forklift_load_job_2",
         "associated_aircraft_name": "AT-LX-2Y2"
     },
     "forklift_unload_job_3": {
         "job_name": "forklift_unload_job_3",
-        "forklift_name": "F02",
-        "arrival_time": 945,
+        "forklift_name": "F01",
+        "arrival_time": 1035,
         "associated_job": "forklift_load_job_3",
         "associated_aircraft_name": "NW-19-1A"
     }

@@ -3,83 +3,98 @@
         "D213": {
             "Hangar": "North Hangar",
             "Arrival": 805,
-            "Departure": 1005
+            "Departure": 825
         },
         "AT-LX-2Y2": {
             "Hangar": "North Hangar",
-            "Arrival": 1010,
-            "Departure": 1030
+            "Arrival": 830,
+            "Departure": 850
         },
         "NW-19-1A": {
             "Hangar": "North Hangar",
-            "Arrival": 1035,
-            "Departure": 1055
+            "Arrival": 855,
+            "Departure": 915
         }
     },
     "trucks": {
-        "JLX-9828": {
-            "Hangar": "North Hangar",
-            "Arrival": 1005,
-            "Departure": 1010
-        },
         "PK2-341": {
             "Hangar": "North Hangar",
-            "Arrival": 1010,
-            "Departure": 1015
+            "Arrival": 825,
+            "Departure": 830
         },
         "ADR-005": {
             "Hangar": "North Hangar",
-            "Arrival": 1030,
-            "Departure": 1035
+            "Arrival": 850,
+            "Departure": 855
         },
         "TX-241-Y": {
             "Hangar": "North Hangar",
-            "Arrival": 1055,
-            "Departure": 1100
+            "Arrival": 850,
+            "Departure": 855
+        },
+        "PXS-005": {
+            "Hangar": "North Hangar",
+            "Arrival": 855,
+            "Departure": 900
+        },
+        "RR-241-5": {
+            "Hangar": "North Hangar",
+            "Arrival": 900,
+            "Departure": 905
         }
     },
     "forklifts": {
         "F01": [
             {
                 "Hangar": "North Hangar",
-                "Time": 1005,
+                "Time": 825,
                 "Job": "Load"
             },
             {
                 "Hangar": "North Hangar",
-                "Time": 1010,
+                "Time": 850,
                 "Job": "Load"
             },
             {
                 "Hangar": "North Hangar",
-                "Time": 1055,
-                "Job": "Load"
-            },
-            {
-                "Hangar": "North Hangar",
-                "Time": 945,
+                "Time": 805,
                 "Job": "Unload"
             },
             {
                 "Hangar": "North Hangar",
-                "Time": 1035,
+                "Time": 830,
+                "Job": "Unload"
+            },
+            {
+                "Hangar": "North Hangar",
+                "Time": 855,
                 "Job": "Unload"
             }
         ],
         "F02": [
             {
                 "Hangar": "North Hangar",
-                "Time": 1030,
+                "Time": 850,
                 "Job": "Load"
             },
             {
                 "Hangar": "North Hangar",
-                "Time": 945,
+                "Time": 855,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "North Hangar",
+                "Time": 900,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "North Hangar",
+                "Time": 805,
                 "Job": "Unload"
             },
             {
                 "Hangar": "North Hangar",
-                "Time": 1010,
+                "Time": 830,
                 "Job": "Unload"
             }
         ]

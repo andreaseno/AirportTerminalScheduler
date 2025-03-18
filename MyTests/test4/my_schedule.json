@@ -1,0 +1,67 @@
+{
+    "aircraft": {
+        "D213": {
+            "Hangar": "North Hangar",
+            "Arrival": 805,
+            "Departure": 825
+        },
+        "AT-LX-2Y2": {
+            "Hangar": "South Hangar",
+            "Arrival": 805,
+            "Departure": 845
+        }
+    },
+    "trucks": {
+        "JLX-9828": {
+            "Hangar": "North Hangar",
+            "Arrival": 825,
+            "Departure": 830
+        },
+        "PK2-341": {
+            "Hangar": "South Hangar",
+            "Arrival": 830,
+            "Departure": 835
+        },
+        "maow-341": {
+            "Hangar": "South Hangar",
+            "Arrival": 845,
+            "Departure": 850
+        }
+    },
+    "forklifts": {
+        "F01": [
+            {
+                "Hangar": "North Hangar",
+                "Time": 825,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "South Hangar",
+                "Time": 830,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "North Hangar",
+                "Time": 805,
+                "Job": "Unload"
+            }
+        ],
+        "F02": [
+            {
+                "Hangar": "South Hangar",
+                "Time": 845,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "South Hangar",
+                "Time": 805,
+                "Job": "Unload"
+            },
+            {
+                "Hangar": "South Hangar",
+                "Time": 825,
+                "Job": "Unload"
+            }
+        ]
+    }
+}
