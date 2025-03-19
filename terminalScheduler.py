@@ -77,7 +77,7 @@ def generate_time_intervals(start_time: int, end_time: int):
     # Generate all 5-minute intervals
     time_intervals = []
     current_dt = start_dt
-    while current_dt <= end_dt:
+    while current_dt < end_dt:
         time_intervals.append(current_dt)
         current_dt += timedelta(minutes=5)
 
@@ -212,7 +212,7 @@ def build_problem_csp(meta, aircrafts, trucks):
         # TODO: Need to handle case when there aren't enough trucks, becasue we can assume that problem is unsolvable if there aren't enough trucks
         solvable = False
         print("CSP IS NOT SOLVABLE")
-        # return CSP(variables, binary_constraints, unary_constraints, solvable)
+        return CSP(variables, {}, {}, False)
     
     # 1.3) Create state variables for each Forklift Load Job X_forklift_job_m
     load_job_variables = []
@@ -334,7 +334,7 @@ def build_problem_csp(meta, aircrafts, trucks):
             binary_constraints[unload_job_a].append(
                 (load_job_b, lambda a, b: 
                     # two jobs must be at the same hangar and unload job a must happen before load job b
-                    ((not a["job_name"] == b["associated_job"]) or (b["arrival_time"] > a["arrival_time"]))
+                    ((not a["job_name"] == b["associated_job"]) or (b["arrival_time"] > a["arrival_time"] + timedelta(minutes=15)))
                 )
             )
     
@@ -441,38 +441,40 @@ if __name__ == "__main__":
     schedule = {"aircraft": {}, "trucks": {}, "forklifts": {}}
     
     for aircraft in aircraft_data:
-        schedule["aircraft"][aircraft] = {
-            # TODO make these not be default values
-            "Hangar": solution[aircraft]["hangar_assignment"],
-            "Arrival": datetime_to_military(solution[aircraft]["hangar_arrival_time"]),
-            "Departure": datetime_to_military(solution[aircraft]["departure_time"])
-            
-        }
+        if aircraft in solution:
+            schedule["aircraft"][aircraft] = {
+                "Hangar": solution[aircraft]["hangar_assignment"],
+                "Arrival": datetime_to_military(solution[aircraft]["hangar_arrival_time"]),
+                "Departure": datetime_to_military(solution[aircraft]["departure_time"])
+                
+            }
+        else: 
+            schedule["aircraft"] = None
         
     for truck in trucks_data:
-        # if truck in solution:
-        #     schedule["trucks"][truck] = {
-        #         # TODO make these not be default values
-        #         "Hangar": solution[truck]["hangar_assignment"],
-        #         "Arrival": datetime_to_military(solution[truck]["hangar_arrival_time"]),
-        #         "Departure": datetime_to_military(solution[truck]["departure_time"])
-        #     }
-        # else:
         # assign a load job to each truck. That load job's arrival will be the same as this trucks arrival and departure will be 5 mins after
         associated_load = find_associated_load_job(solution, truck)
-        associated_aircraft = find_associated_aircraft(solution, associated_load['associated_aircraft_name'])
-        # print(solution)
-        # print(truck)
-        print(associated_load)
-        schedule["trucks"][truck] = {
-            # TODO make these not be default values
-            "Hangar": associated_aircraft['hangar_assignment'],
-            "Arrival": datetime_to_military(associated_load['arrival_time']),
-            "Departure": datetime_to_military(associated_load['arrival_time']+timedelta(minutes=5))
-        }
+        print(f"truck: {truck}")
+        if associated_load:  
+            associated_aircraft = find_associated_aircraft(solution, associated_load['associated_aircraft_name'])
+            schedule["trucks"][truck] = {
+                "Hangar": associated_aircraft['hangar_assignment'],
+                "Arrival": datetime_to_military(associated_load['arrival_time']),
+                "Departure": datetime_to_military(associated_load['arrival_time']+timedelta(minutes=5))
+            }
+        else:
+            schedule["trucks"] = None
+            print("could not find load")
+        print()
         
+    no_forklifts_scheduled = True   
     for forklift in meta_data["Forklifts"]:
-        schedule["forklifts"][forklift] = find_forklift_jobs(solution, forklift)
+        associated_jobs = find_forklift_jobs(solution, forklift)
+        if associated_jobs:
+            schedule["forklifts"][forklift] = associated_jobs
+            no_forklifts_scheduled = False
+    if no_forklifts_scheduled:
+        schedule["forklifts"] = None
             
     with open(schedule_path, 'w') as file:
         json.dump(schedule, file, indent=4)

@@ -18,3 +18,12 @@ python terminalScheduler.py tests/test4_passes/meta.json tests/test4_passes/airc
 
 Run test 5:
 python terminalScheduler.py tests/test5_fails/meta.json tests/test5_fails/aircraft.json tests/test5_fails/trucks.json tests/test5_fails/my_schedule.json
+
+
+MyTests
+
+Run test 4:
+python terminalScheduler.py MyTests/test4/meta.json MyTests/test4/aircraft.json MyTests/test4/trucks.json MyTests/test4/my_schedule.json
+
+Run test 3:
+python terminalScheduler.py MyTests/test3/meta.json MyTests/test3/aircraft.json MyTests/test3/trucks.json MyTests/test3/my_schedule.json

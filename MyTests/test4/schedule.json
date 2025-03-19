@@ -6,19 +6,19 @@
             "Departure": 925
         },
         "Maryland": {
-            "Hangar": "First Hangar",
-            "Arrival": 930,
-            "Departure": 950
+            "Hangar": "Second Hangar",
+            "Arrival": 855,
+            "Departure": 940
         },
         "DC": {
             "Hangar": "First Hangar",
-            "Arrival": 955,
-            "Departure": 1015
+            "Arrival": 940,
+            "Departure": 1000
         },
         "West Virginia": {
             "Hangar": "First Hangar",
-            "Arrival": 1020,
-            "Departure": 1040
+            "Arrival": 1000,
+            "Departure": 1020
         }
     },
     "trucks": {
@@ -28,38 +28,28 @@
             "Departure": 930
         },
         "The Other Truck": {
-            "Hangar": "First Hangar",
-            "Arrival": 950,
-            "Departure": 955
+            "Hangar": "Second Hangar",
+            "Arrival": 915,
+            "Departure": 920
         },
         "A Third Truck": {
-            "Hangar": "First Hangar",
-            "Arrival": 955,
-            "Departure": 1000
+            "Hangar": "Second Hangar",
+            "Arrival": 940,
+            "Departure": 945
         },
         "Late Truck": {
             "Hangar": "First Hangar",
-            "Arrival": 1015,
-            "Departure": 1020
+            "Arrival": 1000,
+            "Departure": 1005
         },
         "Last Truck": {
             "Hangar": "First Hangar",
-            "Arrival": 1040,
-            "Departure": 1045
+            "Arrival": 1020,
+            "Departure": 1025
         }
     },
     "forklifts": {
         "Forklift1": [
-            {
-                "Hangar": "First Hangar",
-                "Time": 925,
-                "Job": "Load"
-            },
-            {
-                "Hangar": "First Hangar",
-                "Time": 950,
-                "Job": "Load"
-            },
             {
                 "Hangar": "First Hangar",
                 "Time": 905,
@@ -67,39 +57,49 @@
             },
             {
                 "Hangar": "First Hangar",
-                "Time": 930,
-                "Job": "Unload"
+                "Time": 925,
+                "Job": "Load"
+            },
+            {
+                "Hangar": "Second Hangar",
+                "Time": 940,
+                "Job": "Load"
             },
             {
                 "Hangar": "First Hangar",
-                "Time": 955,
-                "Job": "Unload"
+                "Time": 1000,
+                "Job": "Load"
             },
             {
                 "Hangar": "First Hangar",
                 "Time": 1020,
-                "Job": "Unload"
+                "Job": "Load"
             }
         ],
         "Forklift2": [
             {
-                "Hangar": "First Hangar",
-                "Time": 955,
+                "Hangar": "Second Hangar",
+                "Time": 855,
+                "Job": "Unload"
+            },
+            {
+                "Hangar": "Second Hangar",
+                "Time": 915,
                 "Job": "Load"
             },
             {
-                "Hangar": "First Hangar",
-                "Time": 1015,
-                "Job": "Load"
+                "Hangar": "Second Hangar",
+                "Time": 920,
+                "Job": "Unload"
             },
             {
                 "Hangar": "First Hangar",
-                "Time": 1040,
-                "Job": "Load"
+                "Time": 940,
+                "Job": "Unload"
             },
             {
                 "Hangar": "First Hangar",
-                "Time": 930,
+                "Time": 1000,
                 "Job": "Unload"
             }
         ]
