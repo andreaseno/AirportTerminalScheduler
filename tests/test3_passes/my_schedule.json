@@ -48,17 +48,17 @@
         ],
         "Forklift2": [
             {
-                "Hangar": "Second Hangar",
-                "Time": 910,
-                "Job": "Load"
-            },
-            {
                 "Hangar": "First Hangar",
                 "Time": 850,
                 "Job": "Unload"
             }
         ],
         "Forklift 3": [
+            {
+                "Hangar": "Second Hangar",
+                "Time": 910,
+                "Job": "Load"
+            },
             {
                 "Hangar": "Second Hangar",
                 "Time": 850,
