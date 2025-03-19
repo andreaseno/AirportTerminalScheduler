@@ -1,86 +1,109 @@
 {
-    "D213": {
-        "aircraft_name": "D213",
-        "hangar_assignment": "North Hangar",
-        "hangar_arrival_time": 805,
-        "terminal_arrival_time": 805,
-        "departure_time": 825,
-        "cargo_amount": 2
-    },
-    "AT-LX-2Y2": {
-        "aircraft_name": "AT-LX-2Y2",
-        "hangar_assignment": "North Hangar",
-        "hangar_arrival_time": 830,
-        "terminal_arrival_time": 815,
-        "departure_time": 850,
+    "Virginia": {
+        "aircraft_name": "Virginia",
+        "hangar_assignment": "First Hangar",
+        "hangar_arrival_time": 905,
+        "terminal_arrival_time": 905,
+        "departure_time": 925,
         "cargo_amount": 1
     },
-    "NW-19-1A": {
-        "aircraft_name": "NW-19-1A",
-        "hangar_assignment": "South Hangar",
-        "hangar_arrival_time": 830,
-        "terminal_arrival_time": 830,
-        "departure_time": 850,
+    "Maryland": {
+        "aircraft_name": "Maryland",
+        "hangar_assignment": "First Hangar",
+        "hangar_arrival_time": 930,
+        "terminal_arrival_time": 855,
+        "departure_time": 950,
+        "cargo_amount": 2
+    },
+    "DC": {
+        "aircraft_name": "DC",
+        "hangar_assignment": "First Hangar",
+        "hangar_arrival_time": 955,
+        "terminal_arrival_time": 855,
+        "departure_time": 1015,
+        "cargo_amount": 1
+    },
+    "West Virginia": {
+        "aircraft_name": "West Virginia",
+        "hangar_assignment": "First Hangar",
+        "hangar_arrival_time": 1020,
+        "terminal_arrival_time": 945,
+        "departure_time": 1040,
         "cargo_amount": 1
     },
     "forklift_load_job_0": {
         "job_name": "forklift_load_job_0",
-        "forklift_name": "F01",
-        "arrival_time": 825,
+        "forklift_name": "Forklift1",
+        "arrival_time": 925,
         "associated_job": "forklift_unload_job_0",
-        "associated_truck_name": "JLX-9828",
-        "associated_aircraft_name": "D213"
+        "associated_truck_name": "The Truck",
+        "associated_aircraft_name": "Virginia"
     },
     "forklift_load_job_1": {
         "job_name": "forklift_load_job_1",
-        "forklift_name": "F01",
-        "arrival_time": 850,
+        "forklift_name": "Forklift1",
+        "arrival_time": 950,
         "associated_job": "forklift_unload_job_1",
-        "associated_truck_name": "PK2-341",
-        "associated_aircraft_name": "D213"
+        "associated_truck_name": "The Other Truck",
+        "associated_aircraft_name": "Maryland"
     },
     "forklift_load_job_2": {
         "job_name": "forklift_load_job_2",
-        "forklift_name": "F02",
-        "arrival_time": 850,
+        "forklift_name": "Forklift2",
+        "arrival_time": 955,
         "associated_job": "forklift_unload_job_2",
-        "associated_truck_name": "ADR-005",
-        "associated_aircraft_name": "AT-LX-2Y2"
+        "associated_truck_name": "A Third Truck",
+        "associated_aircraft_name": "Maryland"
     },
     "forklift_load_job_3": {
         "job_name": "forklift_load_job_3",
-        "forklift_name": "F01",
-        "arrival_time": 855,
+        "forklift_name": "Forklift2",
+        "arrival_time": 1015,
         "associated_job": "forklift_unload_job_3",
-        "associated_truck_name": "TX-241-Y",
-        "associated_aircraft_name": "NW-19-1A"
+        "associated_truck_name": "Late Truck",
+        "associated_aircraft_name": "DC"
+    },
+    "forklift_load_job_4": {
+        "job_name": "forklift_load_job_4",
+        "forklift_name": "Forklift2",
+        "arrival_time": 1040,
+        "associated_job": "forklift_unload_job_4",
+        "associated_truck_name": "Last Truck",
+        "associated_aircraft_name": "West Virginia"
     },
     "forklift_unload_job_0": {
         "job_name": "forklift_unload_job_0",
-        "forklift_name": "F01",
-        "arrival_time": 805,
+        "forklift_name": "Forklift1",
+        "arrival_time": 905,
         "associated_job": "forklift_load_job_0",
-        "associated_aircraft_name": "D213"
+        "associated_aircraft_name": "Virginia"
     },
     "forklift_unload_job_1": {
         "job_name": "forklift_unload_job_1",
-        "forklift_name": "F02",
-        "arrival_time": 805,
+        "forklift_name": "Forklift1",
+        "arrival_time": 930,
         "associated_job": "forklift_load_job_1",
-        "associated_aircraft_name": "D213"
+        "associated_aircraft_name": "Maryland"
     },
     "forklift_unload_job_2": {
         "job_name": "forklift_unload_job_2",
-        "forklift_name": "F01",
-        "arrival_time": 830,
+        "forklift_name": "Forklift2",
+        "arrival_time": 930,
         "associated_job": "forklift_load_job_2",
-        "associated_aircraft_name": "AT-LX-2Y2"
+        "associated_aircraft_name": "Maryland"
     },
     "forklift_unload_job_3": {
         "job_name": "forklift_unload_job_3",
-        "forklift_name": "F02",
-        "arrival_time": 830,
+        "forklift_name": "Forklift1",
+        "arrival_time": 955,
         "associated_job": "forklift_load_job_3",
-        "associated_aircraft_name": "NW-19-1A"
+        "associated_aircraft_name": "DC"
+    },
+    "forklift_unload_job_4": {
+        "job_name": "forklift_unload_job_4",
+        "forklift_name": "Forklift1",
+        "arrival_time": 1020,
+        "associated_job": "forklift_load_job_4",
+        "associated_aircraft_name": "West Virginia"
     }
 }

@@ -1,5 +1,5 @@
 import time
-from collections import deque, defaultdict
+from collections import defaultdict
 
 
 class StateVariable:
@@ -268,13 +268,6 @@ class BacktrackingSolver:
                 # If domain becomes empty => fail forward check
                 if len(neighbor_var.domain) == 0:
                     return False
-
-        # Also check unary constraints of each variable 
-        # (this is optional or you can incorporate unary constraints in is_consistent):
-        # If we want to forward-check unary constraints, we'd do something similar:
-        # for constraint_func in csp.unary_constraints[var_name]:
-        #     if not constraint_func(value):
-        #         return False
 
         return True
 
